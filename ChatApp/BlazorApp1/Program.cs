@@ -1,6 +1,5 @@
 using BlazorApp1.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+//Comprimir el resultado de la ejecución de una acción puede ser una buena idea para acelerar la descarga y
+//evitar un consumo innecesario de datos,
+//y sobre todo en acciones donde se retorne una cantidad importante de información potencialmente comprimible,
+//como texto plano, JSON o marcado HTML.
+builder.Services.AddResponseCompression(options => {
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octect-stream"});
+});
 
 var app = builder.Build();
 
@@ -24,6 +31,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseEndpoints(endpoints => 
+{
+    endpoints.MapHub<ChatHub>("/chathub");
+});
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
