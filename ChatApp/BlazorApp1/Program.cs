@@ -1,4 +1,5 @@
 using BlazorApp1.Data;
+using BlazorApp1.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
